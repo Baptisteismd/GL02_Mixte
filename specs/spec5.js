@@ -1,12 +1,11 @@
-// librairies utilisées
-const fs = require("fs").promises;
-const ICAL = require("ical.js");
-const icalGene = require("ical-generator")
-const CRUParser = require("../CRUParser");
-const { contains } = require("vega-lite");
+// Importation de bibliothèques
+const fs = require("fs").promises; // Module pour la gestion des fichiers avec Promises
+const ICAL = require("ical.js"); // Bibliothèque pour la manipulation d'objets ICAL
+const icalGene = require("ical-generator"); // Bibliothèque pour la génération de fichiers ICAL
+const CRUParser = require("../CRUParser"); // Module personnalisé pour le parsing des fichiers CRU
+const { contains } = require("vega-lite"); // Importation d'une fonction spécifique de la bibliothèque vega-lite
 
-
-// Variables globales 
+// Variables globales
 let tabAlph = ["AB", "CD", "EF", "GH", "IJ", "KL", "MN", "OP", "QR", "ST"];
 let counterExterne = 0;
 let dateObjectEventStart;
@@ -14,24 +13,22 @@ let dateObjectEventEnd;
 let listCoursAffectes = [];
 let listeCoursExport = [];
 
-// Creation d'un objet calendrier 
-const calendar = new icalGene.ICalCalendar({name: "Edt", "scale": "GREGORIAN",})
+// Création d'un objet calendrier ICAL
+const calendar = new icalGene.ICalCalendar({ name: "Edt", "scale": "GREGORIAN", })
 
-
-function readFileAsync(filePath) {
-    return fs.readFile(filePath, "utf8");
+// Fonction asynchrone pour lire un fichier
+async function readFileAsync(filePath) {
+    return await fs.readFile(filePath, "utf8");
 }
 
-// Fonction d'export des cours en format ICAL 
-// On créé un évènement de chaque cours qui nous intéresse
-// On convertit ensuite les donnée en chaine de caractère puis on créé un fichier .ics
-function createEvent (listCoursAffectes, filePath){
+// Fonction pour créer un événement ICAL à partir d'une liste de cours et sauvegarder le résultat dans un fichier .ics
+function createEvent(listCoursAffectes, filePath) {
     listCoursAffectes.forEach(event => {
         calendar.createEvent({
-            start : event.hD,
-            end : event.hF,
-            summary : event.typeExport +' de '+event.ueExport, 
-            location : event.locationExport 
+            start: event.hD,
+            end: event.hF,
+            summary: event.typeExport + ' de ' + event.ueExport,
+            location: event.locationExport
         })
     })
 
@@ -46,9 +43,16 @@ jourDebut / jourFin : on recherche les cours compris entre ces 2 jours de la sem
 horaireDebut / horaireFin : on recherche les cours qui se déroulent entre ces 2 heures : "HH: mm" où HH c [8,20] et mm = 30 ou 0
 dateDebutEDT / dateFinEDT : on exporte les cours qui nous intéressent entre ces 2 dates. Maximum 1 semaine entre les 2 dates : les cours ne seront pas répétés
 */
-function spec5(args, type, jourDebut, horaireDebut, jourFin, horaireFin, dateDebutEDT, dateFinEDT, logger) {
-
-   
+function spec5() {
+    const prompt = require("prompt-sync")();
+    let args =prompt("args : ")
+    let type =prompt("type : ")
+    let jourDebut =prompt("jourDebut : ")
+    let horaireDebut =prompt("horaireDebut : ")
+    let jourFin =prompt("jourFin : ")
+    let horaireFin =prompt("horaireFin : ")
+    let dateDebutEDT =prompt("dateDebutEDT : ")
+    let dateFinEDT =prompt("dateFinEDT : ")
     let ueInscrit = args;
     let listCours = [];
     const jours = ["L*", "MA", "ME", "J", "V", "S"];
@@ -207,7 +211,7 @@ function spec5(args, type, jourDebut, horaireDebut, jourFin, horaireFin, dateDeb
         }
 
     }
-
+console.log("Test 1");
     // Attendre que toutes les promesses soient résolues
     Promise.all(readFilePromises)
 
@@ -265,6 +269,7 @@ function spec5(args, type, jourDebut, horaireDebut, jourFin, horaireFin, dateDeb
 
                 // Ajout de l'élément affecté à la liste finale
                 listCoursAffectes.push(coursAffecte);
+                console.log("Test 2");
             });
         })
 
@@ -362,6 +367,7 @@ function spec5(args, type, jourDebut, horaireDebut, jourFin, horaireFin, dateDeb
                     listeCoursExport.push(coursExport);
                     console.log(coursExport)
                 }
+                console.log("Test 3");
             })
 
 
@@ -373,6 +379,7 @@ function spec5(args, type, jourDebut, horaireDebut, jourFin, horaireFin, dateDeb
         .catch(err => logger.warn(err));
 }
 //spec5(["AP03", "BI01", "MA02"], "D", "MA", "8:00", "V", "14:00", "06/12/2023", "12/12/2023");
+// Exportation de la fonction pour pouvoir l'utiliser dans d'autres fichiers
 module.exports = spec5;
 
 
