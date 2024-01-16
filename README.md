@@ -113,3 +113,5 @@ S. Olgard (sarah.olgard@utt.fr)
 A. Pochard (alexis.pochard@utt.fr)
 X. Boone (xuan.boone@utt.fr)
 M. Godefroy (manon.godefroy@utt.fr)
+
+### licence : OSS
